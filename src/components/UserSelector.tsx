@@ -13,7 +13,7 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedUser,
 }) => {
   const [isDropdownShown, setIsDropdownShown] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleUserChange = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -24,7 +24,7 @@ export const UserSelector: React.FC<Props> = ({
     setIsDropdownShown(false);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -35,6 +35,7 @@ export const UserSelector: React.FC<Props> = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -44,7 +45,7 @@ export const UserSelector: React.FC<Props> = ({
     <div
       data-cy="UserSelector"
       className={`dropdown ${isDropdownShown ? 'is-active' : ''}`}
-        ref={dropdownRef}
+      ref={dropdownRef}
     >
       <div className="dropdown-trigger">
         <button
@@ -72,7 +73,9 @@ export const UserSelector: React.FC<Props> = ({
             return (
               <a
                 href={`#user-${user.id}`}
-                className={"dropdown-item" + (selectedUser === user ? ' is-active' : '')}
+                className={
+                  'dropdown-item' + (selectedUser === user ? ' is-active' : '')
+                }
                 onClick={e => handleUserChange(e, user)}
                 key={user.id}
               >

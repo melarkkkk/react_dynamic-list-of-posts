@@ -6,7 +6,7 @@ interface Props {
   posts: Post[];
   selectedPost: Post | null;
   setSelectedPost: (post: Post | null) => void;
-  setIsSideBarShown: (post: boolean) => void;
+  setIsSideBarShown: (isShown: boolean) => void;
 }
 
 export const PostsList: React.FC<Props> = ({

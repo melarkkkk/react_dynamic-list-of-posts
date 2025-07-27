@@ -4,7 +4,7 @@ interface Props {
   post: Post;
   setSelectedPost: (post: Post | null) => void;
   isSelected: boolean;
-    setIsSideBarShown: (post: boolean) => void;
+  setIsSideBarShown: (isShown: boolean) => void;
 }
 
 export const PostItem: React.FC<Props> = ({

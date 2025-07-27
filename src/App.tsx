@@ -45,6 +45,7 @@ export const App = () => {
   useEffect(() => {
     if (!selectedUser) {
       setPosts([]);
+
       return;
     }
 
@@ -65,11 +66,12 @@ export const App = () => {
   useEffect(() => {
     if (!selectedPost) {
       setComments([]);
+
       return;
     }
 
     setIsSideBarLoading(true);
-    setErrorMessage(ErrorMessage.None);
+    setCommentsErrorMessage(ErrorMessage.None);
 
     commentsService
       .getComments(selectedPost.id)
@@ -78,38 +80,42 @@ export const App = () => {
       .finally(() => setIsSideBarLoading(false));
   }, [selectedPost]);
 
-  const addNewComment = useCallback((comment: Omit<PostComment, 'id'>): Promise<void> => {
-    return commentsService
-      .addComment(comment)
-      .then(created => {
-        setComments(prev => [...prev, created]);
-      })
-      .catch(() => {
-        setCommentsErrorMessage(ErrorMessage.AddComment);
-        return Promise.reject();
+  const addNewComment = useCallback(
+    (comment: Omit<PostComment, 'id'>): Promise<void> => {
+      return commentsService
+        .addComment(comment)
+        .then(created => {
+          setComments(prev => [...prev, created]);
+        })
+        .catch(() => {
+          setCommentsErrorMessage(ErrorMessage.AddComment);
+
+          return Promise.reject();
+        });
+    },
+    [],
+  );
+
+  const deleteComment = useCallback((commentId: number) => {
+    setComments(prev => {
+      const deletedComment = prev.find(comment => comment.id === commentId);
+
+      if (!deletedComment) {
+        setCommentsErrorMessage(ErrorMessage.DeleteComment);
+
+        return prev;
+      }
+
+      const updatedComments = prev.filter(comment => comment.id !== commentId);
+
+      commentsService.deleteComment(commentId).catch(() => {
+        setComments(curr => [...curr, deletedComment]);
+        setCommentsErrorMessage(ErrorMessage.DeleteComment);
       });
-  }, []);
 
-const deleteComment = useCallback((commentId: number) => {
-  setComments(prev => {
-    const deletedComment = prev.find(comment => comment.id === commentId);
-
-    if (!deletedComment) {
-      setCommentsErrorMessage(ErrorMessage.DeleteComment);
-      return prev;
-    }
-
-    const updatedComments = prev.filter(comment => comment.id !== commentId);
-
-    commentsService.deleteComment(commentId).catch(() => {
-      setComments(curr => [...curr, deletedComment]);
-      setCommentsErrorMessage(ErrorMessage.DeleteComment);
+      return updatedComments;
     });
-
-    return updatedComments;
-  });
-}, []);
-
+  }, []);
 
   return (
     <main className="section">
